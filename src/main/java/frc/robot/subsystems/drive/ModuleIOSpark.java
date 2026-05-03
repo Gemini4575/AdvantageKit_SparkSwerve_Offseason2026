@@ -45,6 +45,7 @@ public class ModuleIOSpark implements ModuleIO {
   private final RelativeEncoder turnEncoder;
   private final CANcoder turnAbsEncoder;
   private final boolean turnAbsInverted;
+  private final boolean driveInverted;
 
   // Closed loop controllers
   private final SparkClosedLoopController driveController;
@@ -107,6 +108,15 @@ public class ModuleIOSpark implements ModuleIO {
           default -> false;
         };
 
+    driveInverted =
+        switch (module) {
+          case 0 -> true;
+          case 1 -> false;
+          case 2 -> true;
+          case 3 -> false;
+          default -> false;
+        };
+
     driveEncoder = driveSpark.getEncoder();
     turnEncoder = turnSpark.getEncoder();
     driveController = driveSpark.getClosedLoopController();
@@ -125,7 +135,8 @@ public class ModuleIOSpark implements ModuleIO {
     driveConfig
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(driveMotorCurrentLimit)
-        .voltageCompensation(12.0);
+        .voltageCompensation(12.0)
+        .inverted(driveInverted);
     driveConfig
         .encoder
         .positionConversionFactor(driveEncoderPositionFactor)
