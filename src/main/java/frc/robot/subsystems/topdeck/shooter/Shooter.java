@@ -60,4 +60,16 @@ public class Shooter extends SubsystemBase {
         }
     }
 
+    public void setOpenLoop(double output) {
+        for (int i = 0; i < 4; i++) {
+            shooterColums[i].setOpenLoop(output);
+        }
+    }
+
+    public void stop() {
+        for (int i = 0; i < 4; i++) {
+            shooterColums[i].stop();
+        }
+    }
+
 }
