@@ -61,12 +61,18 @@ public class Shooter extends SubsystemBase {
     }
   }
 
+  /**
+   * Sets the shooter voltage in volts.
+   *
+   * @param output Voltage in volts
+   */
   public void setOpenLoop(double output) {
     for (int i = 0; i < 4; i++) {
       shooterColums[i].setOpenLoop(output);
     }
   }
 
+  /** Stops the shooter. */
   public void stop() {
     for (int i = 0; i < 4; i++) {
       shooterColums[i].stop();
