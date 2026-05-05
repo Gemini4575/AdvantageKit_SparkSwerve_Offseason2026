@@ -44,33 +44,31 @@ public class AdvancerIOSpark implements AdvancerIO {
     kv = KV;
     ks = KS;
 
-    advancerController = advancerMotor.getClosedLoopController();
-    advancerEncoder = advancerMotor.getEncoder();
-    // Configure advancer motor
-    var advancerConfig = new SparkMaxConfig();
-    advancerConfig
-        .idleMode(IdleMode.kCoast)
-        .smartCurrentLimit(30, 30)
-        .voltageCompensation(12)
-        .inverted(advancerInverted);
-    advancerConfig.encoder.uvwMeasurementPeriod(10).uvwAverageDepth(2);
-    advancerConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-    advancerConfig.closedLoop.feedForward.kA(ka).kV(kv).kS(ks);
-    advancerConfig
-        .signals
-        .primaryEncoderPositionAlwaysOn(true)
-        .primaryEncoderPositionPeriodMs((int) (1000.0 / odometryFrequency))
-        .primaryEncoderVelocityAlwaysOn(true)
-        .primaryEncoderVelocityPeriodMs(20)
-        .appliedOutputPeriodMs(20)
-        .busVoltagePeriodMs(20)
-        .outputCurrentPeriodMs(20);
-    tryUntilOk(
-        advancerMotor,
-        5,
-        () ->
-            advancerMotor.configure(
-                advancerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+        advancerController = advancerMotor.getClosedLoopController();
+        advancerEncoder = advancerMotor.getEncoder();
+        // Configure advancer motor
+        var advancerConfig = new SparkMaxConfig();
+        advancerConfig
+                .idleMode(IdleMode.kCoast)
+                .smartCurrentLimit(30, 30)
+                .voltageCompensation(12)
+                .inverted(advancerInverted);
+        advancerConfig.encoder.uvwMeasurementPeriod(10).uvwAverageDepth(2);
+        advancerConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        advancerConfig.closedLoop.feedForward.kA(ka).kV(kv).kS(ks);
+        advancerConfig.signals
+                .primaryEncoderPositionAlwaysOn(true)
+                .primaryEncoderPositionPeriodMs((int) (1000.0 / odometryFrequency))
+                .primaryEncoderVelocityAlwaysOn(true)
+                .primaryEncoderVelocityPeriodMs(20)
+                .appliedOutputPeriodMs(20)
+                .busVoltagePeriodMs(20)
+                .outputCurrentPeriodMs(20);
+        tryUntilOk(
+                advancerMotor,
+                5,
+                () -> advancerMotor.configure(
+                        advancerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     // Create odometry queues
     timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();

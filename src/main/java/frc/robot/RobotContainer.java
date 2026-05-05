@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.shooter.ShootFromHubTele;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -201,9 +202,9 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    // new JoystickButton(operator, 0).whileFalse(new ShootFromHubTele(shooter,
-    // advancer));
-  }
+        // new JoystickButton(operator, 0).whileFalse(new ShootFromHubTele(shooter,
+        // advancer));
+    }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
