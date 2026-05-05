@@ -1,4 +1,4 @@
-package frc.robot.subsystems.topdeck.shooter;
+package frc.robot.subsystems.topdeck.advancer;
 
 import org.littletonrobotics.junction.AutoLog;
 
@@ -19,14 +19,18 @@ public interface AdvancerIO {
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateInputs(AdvancerIOInputs inputs) {}
+  public default void updateInputs(AdvancerIOInputs inputs) {
+  }
 
   /** Run the advancer motor at the specified open loop percent output. */
-  public default void setAdvancerOpenLoop(double output) {}
+  public default void setAdvancerOpenLoop(double output) {
+  }
 
   /** Run the advancer motor at the specified voltage. */
-  public default void setAdvancerVoltage(double volts) {}
+  public default void setAdvancerVoltage(double volts) {
+  }
 
   /** Run the advancer motor at the specified velocity. */
-  public default void setAdvancerVelocity(double velocityRotationsPerMin) {}
+  public default void setAdvancerVelocity(double velocityRotationsPerMin) {
+  }
 }

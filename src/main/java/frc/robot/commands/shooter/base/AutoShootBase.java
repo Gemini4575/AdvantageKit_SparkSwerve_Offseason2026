@@ -2,7 +2,7 @@ package frc.robot.commands.shooter.base;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.topdeck.shooter.Advancer;
+import frc.robot.subsystems.topdeck.advancer.Advancer;
 import frc.robot.subsystems.topdeck.shooter.Shooter;
 
 public class AutoShootBase extends Command {

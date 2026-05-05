@@ -12,6 +12,7 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -24,12 +25,12 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
-import frc.robot.subsystems.topdeck.shooter.Advancer;
-import frc.robot.subsystems.topdeck.shooter.AdvancerIO;
-import frc.robot.subsystems.topdeck.shooter.AdvancerIOSim;
-import frc.robot.subsystems.topdeck.shooter.AdvancerIOSpark;
-import frc.robot.subsystems.topdeck.shooter.AdvancerIOSparkFlex;
-import frc.robot.subsystems.topdeck.shooter.AdvancerIOTalonFX;
+import frc.robot.subsystems.topdeck.advancer.Advancer;
+import frc.robot.subsystems.topdeck.advancer.AdvancerIO;
+import frc.robot.subsystems.topdeck.advancer.AdvancerIOSim;
+import frc.robot.subsystems.topdeck.advancer.AdvancerIOSpark;
+import frc.robot.subsystems.topdeck.advancer.AdvancerIOSparkFlex;
+import frc.robot.subsystems.topdeck.advancer.AdvancerIOTalonFX;
 import frc.robot.subsystems.topdeck.shooter.Shooter;
 import frc.robot.subsystems.topdeck.shooter.ShooterColumIO;
 import frc.robot.subsystems.topdeck.shooter.ShooterColumIOSim;
@@ -52,7 +53,8 @@ public class RobotContainer {
     private final Advancer advancer;
 
     // Controller
-    private final XboxController controller = new XboxController(0);
+    private final XboxController driver = new XboxController(0);
+    private final Joystick operator = new Joystick(1);
 
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
@@ -197,22 +199,22 @@ public class RobotContainer {
         // Default command, normal field-relative drive
         drive.setDefaultCommand(
                 DriveCommands.joystickDrive(
-                        drive,
-                        () -> -controller.getLeftY(),
-                        () -> -controller.getLeftX(),
-                        () -> -controller.getRightX()));
+                        drive, () -> -driver.getLeftY(), () -> -driver.getLeftX(), () -> -driver.getRightX()));
 
         // Switch to X pattern when X button is pressed
-        new JoystickButton(controller, 3).onTrue(Commands.runOnce(drive::stopWithX, drive));
+        new JoystickButton(driver, 3).onTrue(Commands.runOnce(drive::stopWithX, drive));
 
         // Reset gyro to 0 when B button is pressed
-        new JoystickButton(controller, 2)
+        new JoystickButton(driver, 2)
                 .onTrue(
                         Commands.runOnce(
                                 () -> drive.setPose(
                                         new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                                 drive)
                                 .ignoringDisable(true));
+
+        // new JoystickButton(operator, 0).whileFalse(new ShootFromHubTele(shooter,
+        // advancer));
     }
 
     /**

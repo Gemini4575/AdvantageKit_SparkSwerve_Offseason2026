@@ -1,4 +1,10 @@
-package frc.robot.subsystems.topdeck.shooter;
+package frc.robot.subsystems.topdeck.advancer;
+
+import static frc.robot.Constants.NeoAdvancerConstants.*;
+import static frc.robot.subsystems.drive.DriveConstants.odometryFrequency;
+import static frc.robot.util.SparkUtil.ifOk;
+import static frc.robot.util.SparkUtil.sparkStickyFault;
+import static frc.robot.util.SparkUtil.tryUntilOk;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -9,16 +15,8 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.filter.Debouncer;
 import frc.robot.subsystems.drive.SparkOdometryThread;
-
-import static frc.robot.Constants.NeoAdvancerConstants.*;
-import static frc.robot.subsystems.drive.DriveConstants.odometryFrequency;
-import static frc.robot.util.SparkUtil.ifOk;
-import static frc.robot.util.SparkUtil.sparkStickyFault;
-import static frc.robot.util.SparkUtil.tryUntilOk;
-
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
 
@@ -39,7 +37,8 @@ public class AdvancerIOSpark implements AdvancerIO {
 
     public AdvancerIOSpark() {
         advancerInverted = NEO_ADVANCER_MOTOR_INVERTED;
-        advancerMotor = new SparkMax(NEO_ADVANCER_MOTOR_ID, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+        advancerMotor = new SparkMax(
+                NEO_ADVANCER_MOTOR_ID, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
         ka = KA;
         kv = KV;
         ks = KS;
@@ -72,10 +71,10 @@ public class AdvancerIOSpark implements AdvancerIO {
 
         // Create odometry queues
         timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
-        advancerPositionQueue = SparkOdometryThread.getInstance().registerSignal(advancerMotor,
-                advancerEncoder::getPosition);
-        advancerVelocityQueue = SparkOdometryThread.getInstance().registerSignal(advancerMotor,
-                advancerEncoder::getVelocity);
+        advancerPositionQueue = SparkOdometryThread.getInstance()
+                .registerSignal(advancerMotor, advancerEncoder::getPosition);
+        advancerVelocityQueue = SparkOdometryThread.getInstance()
+                .registerSignal(advancerMotor, advancerEncoder::getVelocity);
     }
 
     @Override
@@ -83,17 +82,18 @@ public class AdvancerIOSpark implements AdvancerIO {
         sparkStickyFault = false;
         // Update advancer inputs
         sparkStickyFault = false;
-        ifOk(advancerMotor, advancerEncoder::getPosition, (value) -> inputs.advancerPositionRot = value);
         ifOk(
-                advancerMotor,
-                advancerEncoder::getVelocity,
-                (value) -> inputs.advancerVelocityRPM = value);
+                advancerMotor, advancerEncoder::getPosition, (value) -> inputs.advancerPositionRot = value);
+        ifOk(
+                advancerMotor, advancerEncoder::getVelocity, (value) -> inputs.advancerVelocityRPM = value);
         ifOk(
                 advancerMotor,
                 new DoubleSupplier[] { advancerMotor::getAppliedOutput, advancerMotor::getBusVoltage },
                 (values) -> inputs.advancerAppliedVolts = values[0] * values[1]);
         ifOk(
-                advancerMotor, advancerMotor::getOutputCurrent, (value) -> inputs.advancerStatorCurrentAmps = value);
+                advancerMotor,
+                advancerMotor::getOutputCurrent,
+                (value) -> inputs.advancerStatorCurrentAmps = value);
         inputs.advancerConnected = advancerConnectedDebounce.calculate(!sparkStickyFault);
         // Update odometry inputs
         inputs.odometryAdvancerPositionsRot = advancerPositionQueue.stream().mapToDouble((Double value) -> value)
@@ -114,5 +114,4 @@ public class AdvancerIOSpark implements AdvancerIO {
     public void setAdvancerVelocity(double velocityRotationsPerMin) {
         advancerController.setSetpoint(velocityRotationsPerMin, ControlType.kVelocity);
     }
-
 }

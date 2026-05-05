@@ -11,9 +11,10 @@ public class ShooterColum {
 
   public ShooterColum(ShooterColumIO io, int index) {
     this.io = io;
-    ShooterDisconnectedAlert = new Alert(
-        "Disconnected shooter motor on module " + Integer.toString(index) + ".",
-        AlertType.kError);
+    ShooterDisconnectedAlert =
+        new Alert(
+            "Disconnected shooter motor on module " + Integer.toString(index) + ".",
+            AlertType.kError);
   }
 
   public void periodic() {

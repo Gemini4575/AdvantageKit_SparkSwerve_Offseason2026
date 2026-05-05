@@ -1,7 +1,9 @@
-package frc.robot.subsystems.topdeck.shooter;
+package frc.robot.subsystems.topdeck.advancer;
 
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import frc.robot.subsystems.topdeck.shooter.AdvancerIOInputsAutoLogged;
+
 import org.littletonrobotics.junction.Logger;
 
 public class AdvancerMotor {

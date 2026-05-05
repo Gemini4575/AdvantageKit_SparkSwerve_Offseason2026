@@ -1,4 +1,4 @@
-package frc.robot.subsystems.topdeck.shooter;
+package frc.robot.subsystems.topdeck.advancer;
 
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.AdvancerConstants.*;
@@ -51,13 +51,13 @@ public class Advancer extends SubsystemBase {
   }
 
   public void reverse() {
-    talonAdvancer.setOpenLoop(KRAKEN_ADVANCER_SPEED);
+    talonAdvancer.setOpenLoop(KRAKEN_ADCNAVER_SPEED);
     neoAdvancer.setOpenLoop(NEO_ADVANCER_SPEED);
     roller.setOpenLoop(ADVANCER_ROLLER_SPEED);
   }
 
   public void advancerOnlyReverse() {
-    talonAdvancer.setOpenLoop(KRAKEN_ADVANCER_SPEED);
+    talonAdvancer.setOpenLoop(KRAKEN_ADCNAVER_SPEED);
     neoAdvancer.setOpenLoop(NEO_ADVANCER_SPEED);
   }
 
@@ -68,7 +68,7 @@ public class Advancer extends SubsystemBase {
   }
 
   public void advance() {
-    talonAdvancer.setOpenLoop(-KRAKEN_ADVANCER_SPEED);
+    talonAdvancer.setOpenLoop(-KRAKEN_ADCNAVER_SPEED);
     neoAdvancer.setOpenLoop(-NEO_ADVANCER_SPEED);
     roller.setOpenLoop(-ADVANCER_ROLLER_SPEED);
   }

@@ -41,9 +41,19 @@ public final class Constants {
     public static final boolean NEO_ADVANCER_MOTOR_INVERTED = false;
     public static final boolean ROLLER_MOTOR_INVERTED = false;
 
+    public static final double KRAKEN_ADCNAVER_SPEED = 1.0;
+
     public static final double ADVANCER_KA = 0.0;
     public static final double ADVANCER_KV = 0.0;
     public static final double ADVANCER_KS = 0.0;
+  }
+
+  public static final class NeoAdvancerConstants {
+    public static final double KA = 0.0089868;
+    public static final double KV = 0.10849;
+    public static final double KS = 0.087923;
+    public static final int NEO_ADVANCER_MOTOR_ID = 8;
+    public static final boolean NEO_ADVANCER_MOTOR_INVERTED = false;
   }
 
   public static final class IntakeConstants {

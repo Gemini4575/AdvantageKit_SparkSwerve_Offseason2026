@@ -1,4 +1,4 @@
-package frc.robot.subsystems.topdeck.shooter;
+package frc.robot.subsystems.topdeck.advancer;
 
 import static frc.robot.Constants.AdvancerConstants.*;
 
@@ -36,10 +36,9 @@ public class AdvancerIOTalonFX implements AdvancerIO {
     advancerConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     advancerConfig.CurrentLimits.StatorCurrentLimit = 40.0;
     advancerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    advancerConfig.MotorOutput.Inverted =
-        ADVANCER_MOTOR_INVERTED
-            ? InvertedValue.Clockwise_Positive
-            : InvertedValue.CounterClockwise_Positive;
+    advancerConfig.MotorOutput.Inverted = ADVANCER_MOTOR_INVERTED
+        ? InvertedValue.Clockwise_Positive
+        : InvertedValue.CounterClockwise_Positive;
 
     advancerMotor.getConfigurator().apply(advancerConfig);
     BaseStatusSignal.setUpdateFrequencyForAll(
@@ -49,10 +48,9 @@ public class AdvancerIOTalonFX implements AdvancerIO {
 
   @Override
   public void updateInputs(AdvancerIOInputs inputs) {
-    inputs.advancerConnected =
-        BaseStatusSignal.refreshAll(
-                position, velocity, appliedVoltage, supplyCurrent, statorCurrent, temperature)
-            .equals(StatusCode.OK);
+    inputs.advancerConnected = BaseStatusSignal.refreshAll(
+        position, velocity, appliedVoltage, supplyCurrent, statorCurrent, temperature)
+        .equals(StatusCode.OK);
     inputs.advancerPositionRot = position.getValueAsDouble();
     inputs.advancerVelocityRPM = velocity.getValueAsDouble() * 60.0;
     inputs.advancerAppliedVolts = appliedVoltage.getValueAsDouble();

@@ -1,4 +1,4 @@
-package frc.robot.subsystems.topdeck.shooter;
+package frc.robot.subsystems.topdeck.advancer;
 
 import static frc.robot.Constants.AdvancerConstants.*;
 import static frc.robot.subsystems.drive.DriveConstants.odometryFrequency;
@@ -46,8 +46,7 @@ public class AdvancerIOSparkFlex implements AdvancerIO {
         .disableFollowerMode();
     rollerConfig.encoder.uvwMeasurementPeriod(10).uvwAverageDepth(2);
     rollerConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-    rollerConfig
-        .signals
+    rollerConfig.signals
         .primaryEncoderPositionAlwaysOn(true)
         .primaryEncoderPositionPeriodMs((int) (1000.0 / odometryFrequency))
         .primaryEncoderVelocityAlwaysOn(true)
@@ -58,15 +57,12 @@ public class AdvancerIOSparkFlex implements AdvancerIO {
     tryUntilOk(
         rollerMotor,
         5,
-        () ->
-            rollerMotor.configure(
-                rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+        () -> rollerMotor.configure(
+            rollerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
-    rollerPositionQueue =
-        SparkOdometryThread.getInstance().registerSignal(rollerMotor, rollerEncoder::getPosition);
-    rollerVelocityQueue =
-        SparkOdometryThread.getInstance().registerSignal(rollerMotor, rollerEncoder::getVelocity);
+    rollerPositionQueue = SparkOdometryThread.getInstance().registerSignal(rollerMotor, rollerEncoder::getPosition);
+    rollerVelocityQueue = SparkOdometryThread.getInstance().registerSignal(rollerMotor, rollerEncoder::getVelocity);
   }
 
   @Override
@@ -76,7 +72,7 @@ public class AdvancerIOSparkFlex implements AdvancerIO {
     ifOk(rollerMotor, rollerEncoder::getVelocity, (value) -> inputs.advancerVelocityRPM = value);
     ifOk(
         rollerMotor,
-        new DoubleSupplier[] {rollerMotor::getAppliedOutput, rollerMotor::getBusVoltage},
+        new DoubleSupplier[] { rollerMotor::getAppliedOutput, rollerMotor::getBusVoltage },
         (values) -> inputs.advancerAppliedVolts = values[0] * values[1]);
     ifOk(
         rollerMotor,
@@ -84,12 +80,9 @@ public class AdvancerIOSparkFlex implements AdvancerIO {
         (value) -> inputs.advancerSupplyCurrentAmps = value);
     inputs.advancerConnected = rollerConnectedDebounce.calculate(!sparkStickyFault);
 
-    inputs.odometryTimestamps =
-        timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
-    inputs.odometryAdvancerPositionsRot =
-        rollerPositionQueue.stream().mapToDouble((Double value) -> value).toArray();
-    inputs.odometryAdvancerVelocityRPM =
-        rollerVelocityQueue.stream().mapToDouble((Double value) -> value).toArray();
+    inputs.odometryTimestamps = timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+    inputs.odometryAdvancerPositionsRot = rollerPositionQueue.stream().mapToDouble((Double value) -> value).toArray();
+    inputs.odometryAdvancerVelocityRPM = rollerVelocityQueue.stream().mapToDouble((Double value) -> value).toArray();
     timestampQueue.clear();
     rollerPositionQueue.clear();
     rollerVelocityQueue.clear();
