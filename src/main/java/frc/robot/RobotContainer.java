@@ -24,6 +24,12 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSpark;
+import frc.robot.subsystems.topdeck.shooter.Advancer;
+import frc.robot.subsystems.topdeck.shooter.AdvancerIO;
+import frc.robot.subsystems.topdeck.shooter.AdvancerIOSim;
+import frc.robot.subsystems.topdeck.shooter.AdvancerIOSpark;
+import frc.robot.subsystems.topdeck.shooter.AdvancerIOSparkFlex;
+import frc.robot.subsystems.topdeck.shooter.AdvancerIOTalonFX;
 import frc.robot.subsystems.topdeck.shooter.Shooter;
 import frc.robot.subsystems.topdeck.shooter.ShooterColumIO;
 import frc.robot.subsystems.topdeck.shooter.ShooterColumIOSim;
@@ -40,6 +46,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final Shooter shooter;
+  private final Advancer advancer;
 
   // Controller
   private final XboxController controller = new XboxController(0);
@@ -65,6 +72,8 @@ public class RobotContainer {
                 new ShooterColumIOSpark(1),
                 new ShooterColumIOSpark(2),
                 new ShooterColumIOSpark(3));
+        advancer =
+            new Advancer(new AdvancerIOTalonFX(), new AdvancerIOSpark(), new AdvancerIOSparkFlex());
         break;
 
       case SIM:
@@ -82,6 +91,7 @@ public class RobotContainer {
                 new ShooterColumIOSim(1),
                 new ShooterColumIOSim(2),
                 new ShooterColumIOSim(3));
+        advancer = new Advancer(new AdvancerIOSim(), new AdvancerIOSim(), new AdvancerIOSim());
         break;
 
       default:
@@ -99,6 +109,7 @@ public class RobotContainer {
                 new ShooterColumIO() {},
                 new ShooterColumIO() {},
                 new ShooterColumIO() {});
+        advancer = new Advancer(new AdvancerIO() {}, new AdvancerIO() {}, new AdvancerIO() {});
         break;
     }
 
@@ -122,6 +133,42 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Advancer Talon SysId (Quasistatic Forward)",
+        advancer.talonSysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Advancer Talon SysId (Quasistatic Reverse)",
+        advancer.talonSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Advancer Talon SysId (Dynamic Forward)",
+        advancer.talonSysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Advancer Talon SysId (Dynamic Reverse)",
+        advancer.talonSysIdDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Advancer Neo SysId (Quasistatic Forward)",
+        advancer.neoSysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Advancer Neo SysId (Quasistatic Reverse)",
+        advancer.neoSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Advancer Neo SysId (Dynamic Forward)",
+        advancer.neoSysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Advancer Neo SysId (Dynamic Reverse)",
+        advancer.neoSysIdDynamic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Advancer Roller SysId (Quasistatic Forward)",
+        advancer.rollerSysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Advancer Roller SysId (Quasistatic Reverse)",
+        advancer.rollerSysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Advancer Roller SysId (Dynamic Forward)",
+        advancer.rollerSysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Advancer Roller SysId (Dynamic Reverse)",
+        advancer.rollerSysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     configureButtonBindings();

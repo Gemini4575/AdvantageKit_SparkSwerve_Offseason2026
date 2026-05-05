@@ -37,6 +37,13 @@ public final class Constants {
     public static final int ADVANCER_MOTOR_ID = 1;
     public static final int ROLLER_MOTOR_ID = 9;
     public static final int NEO_ADVANCER_MOTOR_ID = 8; // was climber
+    public static final boolean ADVANCER_MOTOR_INVERTED = false;
+    public static final boolean NEO_ADVANCER_MOTOR_INVERTED = false;
+    public static final boolean ROLLER_MOTOR_INVERTED = false;
+
+    public static final double ADVANCER_KA = 0.0;
+    public static final double ADVANCER_KV = 0.0;
+    public static final double ADVANCER_KS = 0.0;
   }
 
   public static final class IntakeConstants {

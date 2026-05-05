@@ -6,17 +6,14 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 public class ShooterColum {
   private final ShooterColumIO io;
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
-  private final int index;
 
   private final Alert ShooterDisconnectedAlert;
 
   public ShooterColum(ShooterColumIO io, int index) {
     this.io = io;
-    this.index = index;
-    ShooterDisconnectedAlert =
-        new Alert(
-            "Disconnected shooter motor on module " + Integer.toString(index) + ".",
-            AlertType.kError);
+    ShooterDisconnectedAlert = new Alert(
+        "Disconnected shooter motor on module " + Integer.toString(index) + ".",
+        AlertType.kError);
   }
 
   public void periodic() {
