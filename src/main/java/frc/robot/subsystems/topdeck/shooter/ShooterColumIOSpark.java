@@ -4,7 +4,6 @@ import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.subsystems.drive.DriveConstants.odometryFrequency;
 import static frc.robot.util.SparkUtil.ifOk;
 import static frc.robot.util.SparkUtil.sparkStickyFault;
-import static frc.robot.util.SparkUtil.tryUntilOk;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
@@ -93,7 +92,7 @@ public class ShooterColumIOSpark implements ShooterColumIO {
         .inverted(shooterInverted);
     shooterConfig.encoder.uvwMeasurementPeriod(10).uvwAverageDepth(2);
     shooterConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-    shooterConfig.closedLoop.feedForward.kA(ka).kV(kv).kS(ks);
+    shooterConfig.closedLoop.feedForward.kV(kv);
     shooterConfig
         .signals
         .primaryEncoderPositionAlwaysOn(true)
@@ -103,12 +102,12 @@ public class ShooterColumIOSpark implements ShooterColumIO {
         .appliedOutputPeriodMs(20)
         .busVoltagePeriodMs(20)
         .outputCurrentPeriodMs(20);
-    tryUntilOk(
-        shooterMotor,
-        5,
-        () ->
-            shooterMotor.configure(
-                shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+    // tryUntilOk(
+    // shooterMotor,
+    // 5,
+    // () ->
+    shooterMotor.configure(
+        shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters); // );
 
     // Create odometry queues
     timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
