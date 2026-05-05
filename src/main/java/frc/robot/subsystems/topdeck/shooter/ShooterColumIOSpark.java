@@ -1,26 +1,24 @@
 package frc.robot.subsystems.topdeck.shooter;
 
-import com.revrobotics.PersistMode;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.subsystems.drive.DriveConstants.odometryFrequency;
 import static frc.robot.util.SparkUtil.ifOk;
 import static frc.robot.util.SparkUtil.sparkStickyFault;
 import static frc.robot.util.SparkUtil.tryUntilOk;
 
-import java.util.Queue;
-import java.util.function.DoubleSupplier;
-
+import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.filter.Debouncer;
 import frc.robot.subsystems.drive.SparkOdometryThread;
+import java.util.Queue;
+import java.util.function.DoubleSupplier;
 
 public class ShooterColumIOSpark implements ShooterColumIO {
   private final SparkFlex shooterMotor;
@@ -40,41 +38,50 @@ public class ShooterColumIOSpark implements ShooterColumIO {
   private final Debouncer shooterConnectedDebounce = new Debouncer(0.5);
 
   public ShooterColumIOSpark(int shooter) {
-    shooterInverted = switch (shooter) {
-      case 0 -> SHOOTER_MOTOR_0_INVERTED;
-      case 1 -> SHOOTER_MOTOR_1_INVERTED;
-      case 2 -> SHOOTER_MOTOR_2_INVERTED;
-      case 3 -> SHOOTER_MOTOR_3_INVERTED;
-      default -> throw new IllegalArgumentException("Invalid shooter number: " + shooter);
-    };
-    shooterMotor = switch (shooter) {
-      case 0 -> new SparkFlex(SHOOTER_MOTOR_ID_0, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-      case 1 -> new SparkFlex(SHOOTER_MOTOR_ID_1, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-      case 2 -> new SparkFlex(SHOOTER_MOTOR_ID_2, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-      case 3 -> new SparkFlex(SHOOTER_MOTOR_ID_3, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-      default -> throw new IllegalArgumentException("Invalid shooter number: " + shooter);
-    };
-    ka = switch (shooter) {
-      case 0 -> KA0;
-      case 1 -> KA1;
-      case 2 -> KA2;
-      case 3 -> KA3;
-      default -> throw new IllegalArgumentException("Invalid shooter number: " + shooter);
-    };
-    kv = switch (shooter) {
-      case 0 -> KV0;
-      case 1 -> KV1;
-      case 2 -> KV2;
-      case 3 -> KV3;
-      default -> throw new IllegalArgumentException("Invalid shooter number: " + shooter);
-    };
-    ks = switch (shooter) {
-      case 0 -> KS0;
-      case 1 -> KS1;
-      case 2 -> KS2;
-      case 3 -> KS3;
-      default -> throw new IllegalArgumentException("Invalid shooter number: " + shooter);
-    };
+    shooterInverted =
+        switch (shooter) {
+          case 0 -> SHOOTER_MOTOR_0_INVERTED;
+          case 1 -> SHOOTER_MOTOR_1_INVERTED;
+          case 2 -> SHOOTER_MOTOR_2_INVERTED;
+          case 3 -> SHOOTER_MOTOR_3_INVERTED;
+          default -> throw new IllegalArgumentException("Invalid shooter number: " + shooter);
+        };
+    shooterMotor =
+        switch (shooter) {
+          case 0 -> new SparkFlex(
+              SHOOTER_MOTOR_ID_0, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+          case 1 -> new SparkFlex(
+              SHOOTER_MOTOR_ID_1, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+          case 2 -> new SparkFlex(
+              SHOOTER_MOTOR_ID_2, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+          case 3 -> new SparkFlex(
+              SHOOTER_MOTOR_ID_3, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+          default -> throw new IllegalArgumentException("Invalid shooter number: " + shooter);
+        };
+    ka =
+        switch (shooter) {
+          case 0 -> KA0;
+          case 1 -> KA1;
+          case 2 -> KA2;
+          case 3 -> KA3;
+          default -> throw new IllegalArgumentException("Invalid shooter number: " + shooter);
+        };
+    kv =
+        switch (shooter) {
+          case 0 -> KV0;
+          case 1 -> KV1;
+          case 2 -> KV2;
+          case 3 -> KV3;
+          default -> throw new IllegalArgumentException("Invalid shooter number: " + shooter);
+        };
+    ks =
+        switch (shooter) {
+          case 0 -> KS0;
+          case 1 -> KS1;
+          case 2 -> KS2;
+          case 3 -> KS3;
+          default -> throw new IllegalArgumentException("Invalid shooter number: " + shooter);
+        };
     shooterController = shooterMotor.getClosedLoopController();
     shooterEncoder = shooterMotor.getEncoder();
     // Configure shooter motor
@@ -84,16 +91,11 @@ public class ShooterColumIOSpark implements ShooterColumIO {
         .smartCurrentLimit(30, 30)
         .voltageCompensation(12)
         .inverted(shooterInverted);
-    shooterConfig.encoder
-        .uvwMeasurementPeriod(10)
-        .uvwAverageDepth(2);
-    shooterConfig.closedLoop
-        .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-    shooterConfig.closedLoop.feedForward
-        .kA(ka)
-        .kV(kv)
-        .kS(ks);
-    shooterConfig.signals
+    shooterConfig.encoder.uvwMeasurementPeriod(10).uvwAverageDepth(2);
+    shooterConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+    shooterConfig.closedLoop.feedForward.kA(ka).kV(kv).kS(ks);
+    shooterConfig
+        .signals
         .primaryEncoderPositionAlwaysOn(true)
         .primaryEncoderPositionPeriodMs((int) (1000.0 / odometryFrequency))
         .primaryEncoderVelocityAlwaysOn(true)
@@ -101,14 +103,19 @@ public class ShooterColumIOSpark implements ShooterColumIO {
         .appliedOutputPeriodMs(20)
         .busVoltagePeriodMs(20)
         .outputCurrentPeriodMs(20);
-    tryUntilOk(shooterMotor, 5,
-        () -> shooterMotor.configure(shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
+    tryUntilOk(
+        shooterMotor,
+        5,
+        () ->
+            shooterMotor.configure(
+                shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
 
     // Create odometry queues
     timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
-    shooterPositionQueue = SparkOdometryThread.getInstance().registerSignal(shooterMotor, shooterEncoder::getPosition);
-    shooterVelocityQueue = SparkOdometryThread.getInstance().registerSignal(shooterMotor, shooterEncoder::getVelocity);
-
+    shooterPositionQueue =
+        SparkOdometryThread.getInstance().registerSignal(shooterMotor, shooterEncoder::getPosition);
+    shooterVelocityQueue =
+        SparkOdometryThread.getInstance().registerSignal(shooterMotor, shooterEncoder::getVelocity);
   }
 
   @Override
@@ -117,16 +124,22 @@ public class ShooterColumIOSpark implements ShooterColumIO {
     // Update shooter inputs
     sparkStickyFault = false;
     ifOk(shooterMotor, shooterEncoder::getPosition, (value) -> inputs.shooterPositionRad = value);
-    ifOk(shooterMotor, shooterEncoder::getVelocity, (value) -> inputs.shooterVelocityRotPerSec = value);
     ifOk(
         shooterMotor,
-        new DoubleSupplier[] { shooterMotor::getAppliedOutput, shooterMotor::getBusVoltage },
+        shooterEncoder::getVelocity,
+        (value) -> inputs.shooterVelocityRotPerSec = value);
+    ifOk(
+        shooterMotor,
+        new DoubleSupplier[] {shooterMotor::getAppliedOutput, shooterMotor::getBusVoltage},
         (values) -> inputs.shooterAppliedVolts = values[0] * values[1]);
-    ifOk(shooterMotor, shooterMotor::getOutputCurrent, (value) -> inputs.shooterCurrentAmps = value);
+    ifOk(
+        shooterMotor, shooterMotor::getOutputCurrent, (value) -> inputs.shooterCurrentAmps = value);
     inputs.shooterConnected = shooterConnectedDebounce.calculate(!sparkStickyFault);
     // Update odometry inputs
-    inputs.odometryShooterPositionsRad = shooterPositionQueue.stream().mapToDouble((Double value) -> value).toArray();
-    inputs.odometryShooterVelocityRot = shooterVelocityQueue.stream().mapToDouble((Double value) -> value).toArray();
+    inputs.odometryShooterPositionsRad =
+        shooterPositionQueue.stream().mapToDouble((Double value) -> value).toArray();
+    inputs.odometryShooterVelocityRot =
+        shooterVelocityQueue.stream().mapToDouble((Double value) -> value).toArray();
     timestampQueue.clear();
     shooterPositionQueue.clear();
     shooterVelocityQueue.clear();
@@ -141,5 +154,4 @@ public class ShooterColumIOSpark implements ShooterColumIO {
   public void setShooterVelocity(double velocityRotationsPerMin) {
     shooterController.setSetpoint(velocityRotationsPerMin, ControlType.kVelocity);
   }
-
 }

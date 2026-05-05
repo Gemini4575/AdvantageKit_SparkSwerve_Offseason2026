@@ -3,8 +3,8 @@ package frc.robot.subsystems.topdeck.shooter;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ShooterColumIO {
-    @AutoLog
-    public static class ShooterIOInputs {
+  @AutoLog
+  public static class ShooterIOInputs {
     public boolean shooterConnected = false;
     public double shooterVelocityRotPerSec = 0.0;
     public double shooterPositionRad = 0.0;
@@ -24,5 +24,4 @@ public interface ShooterColumIO {
 
   /** Run the shooter motor at the specified velocity. */
   public default void setShooterVelocity(double velocityRotationsPerMin) {}
-
 }

@@ -52,7 +52,8 @@ public class ShooterColumIOSim implements ShooterColumIO {
 
   @Override
   public void updateInputs(ShooterIOInputs inputs) {
-    double velocityRPM = Units.radiansPerSecondToRotationsPerMinute(shooterSim.getAngularVelocityRadPerSec());
+    double velocityRPM =
+        Units.radiansPerSecondToRotationsPerMinute(shooterSim.getAngularVelocityRadPerSec());
 
     if (shooterClosedLoop) {
       shooterAppliedVolts = shooterFFVolts + shooterController.calculate(velocityRPM);
@@ -63,7 +64,8 @@ public class ShooterColumIOSim implements ShooterColumIO {
     shooterSim.setInputVoltage(MathUtil.clamp(shooterAppliedVolts, -12.0, 12.0));
     shooterSim.update(0.02);
 
-    velocityRPM = Units.radiansPerSecondToRotationsPerMinute(shooterSim.getAngularVelocityRadPerSec());
+    velocityRPM =
+        Units.radiansPerSecondToRotationsPerMinute(shooterSim.getAngularVelocityRadPerSec());
 
     inputs.shooterConnected = true;
     inputs.shooterPositionRad = shooterSim.getAngularPositionRad();

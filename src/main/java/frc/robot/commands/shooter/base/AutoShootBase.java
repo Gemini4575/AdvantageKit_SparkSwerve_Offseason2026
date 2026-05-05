@@ -6,39 +6,38 @@ import frc.robot.subsystems.topdeck.AdvancerSubsystem;
 import frc.robot.subsystems.topdeck.shooter.Shooter;
 
 public class AutoShootBase extends Command {
-    private final Shooter s;
-    public int Velocity = 6784;
-    private final AdvancerSubsystem sadfd;
-    private Timer timer = new Timer();
+  private final Shooter s;
+  public int Velocity = 6784;
+  private final AdvancerSubsystem sadfd;
+  private Timer timer = new Timer();
 
-    public AutoShootBase(Shooter a, AdvancerSubsystem ds, int velocity) {
-        s = a;
-        sadfd = ds;
-        Velocity = velocity;
-        addRequirements(a, ds);
-    }
+  public AutoShootBase(Shooter a, AdvancerSubsystem ds, int velocity) {
+    s = a;
+    sadfd = ds;
+    Velocity = velocity;
+    addRequirements(a, ds);
+  }
 
-    @Override
-    public void initialize() {
-        timer.reset();
-        timer.start();
-    }
+  @Override
+  public void initialize() {
+    timer.reset();
+    timer.start();
+  }
 
-    @Override
-    public void execute() {
-        s.runVelocity(Velocity);
-        sadfd.advance();
-    }
+  @Override
+  public void execute() {
+    s.runVelocity(Velocity);
+    sadfd.advance();
+  }
 
-    @Override
-    public boolean isFinished() {
-        return timer.hasElapsed(5);
-    }
+  @Override
+  public boolean isFinished() {
+    return timer.hasElapsed(5);
+  }
 
-    @Override
-    public void end(boolean interrupted) {
-        s.stop();
-        sadfd.stopAdvancer();
-    }
-
+  @Override
+  public void end(boolean interrupted) {
+    s.stop();
+    sadfd.stopAdvancer();
+  }
 }

@@ -76,6 +76,7 @@ public final class Constants {
     public static final double KS2 = 0.058578;
     public static final double KS3 = 0.037203;
   }
+
   public static final class ShooterRPMConstants {
     public static final int HUB_SHOT = 3050;
     public static final int LADDER_SHOT = 4200;
