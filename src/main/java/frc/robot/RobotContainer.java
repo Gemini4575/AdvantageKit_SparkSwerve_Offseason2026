@@ -202,9 +202,8 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-        // new JoystickButton(operator, 0).whileFalse(new ShootFromHubTele(shooter,
-        // advancer));
-    }
+    new JoystickButton(operator, 1).whileFalse(new ShootFromHubTele(shooter, advancer));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
