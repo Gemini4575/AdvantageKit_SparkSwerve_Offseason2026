@@ -18,10 +18,12 @@ public class AdvancerIOSim implements AdvancerIO {
   private static final double advancerSimP = 0.01;
   private static final double advancerSimD = 0.0;
 
-  private final DCMotorSim advancerSim = new DCMotorSim(
-      LinearSystemId.createDCMotorSystem(advancerGearbox, advancerMOI, advancerReduction),
-      advancerGearbox);
-  private final PIDController advancerController = new PIDController(advancerSimP, 0.0, advancerSimD);
+  private final DCMotorSim advancerSim =
+      new DCMotorSim(
+          LinearSystemId.createDCMotorSystem(advancerGearbox, advancerMOI, advancerReduction),
+          advancerGearbox);
+  private final PIDController advancerController =
+      new PIDController(advancerSimP, 0.0, advancerSimD);
 
   private boolean advancerClosedLoop = false;
   private double advancerFFVolts = 0.0;
@@ -29,7 +31,8 @@ public class AdvancerIOSim implements AdvancerIO {
 
   @Override
   public void updateInputs(AdvancerIOInputs inputs) {
-    double velocityRPM = Units.radiansPerSecondToRotationsPerMinute(advancerSim.getAngularVelocityRadPerSec());
+    double velocityRPM =
+        Units.radiansPerSecondToRotationsPerMinute(advancerSim.getAngularVelocityRadPerSec());
 
     if (advancerClosedLoop) {
       advancerAppliedVolts = advancerFFVolts + advancerController.calculate(velocityRPM);
@@ -41,7 +44,8 @@ public class AdvancerIOSim implements AdvancerIO {
     advancerSim.setInputVoltage(advancerAppliedVolts);
     advancerSim.update(0.02);
 
-    velocityRPM = Units.radiansPerSecondToRotationsPerMinute(advancerSim.getAngularVelocityRadPerSec());
+    velocityRPM =
+        Units.radiansPerSecondToRotationsPerMinute(advancerSim.getAngularVelocityRadPerSec());
 
     inputs.advancerConnected = true;
     inputs.advancerPositionRot = Units.radiansToRotations(advancerSim.getAngularPositionRad());
@@ -50,9 +54,9 @@ public class AdvancerIOSim implements AdvancerIO {
     inputs.advancerSupplyCurrentAmps = Math.abs(advancerSim.getCurrentDrawAmps());
     inputs.advancerStatorCurrentAmps = inputs.advancerSupplyCurrentAmps;
 
-    inputs.odometryTimestamps = new double[] { Timer.getFPGATimestamp() };
-    inputs.odometryAdvancerPositionsRot = new double[] { inputs.advancerPositionRot };
-    inputs.odometryAdvancerVelocityRPM = new double[] { inputs.advancerVelocityRPM };
+    inputs.odometryTimestamps = new double[] {Timer.getFPGATimestamp()};
+    inputs.odometryAdvancerPositionsRot = new double[] {inputs.advancerPositionRot};
+    inputs.odometryAdvancerVelocityRPM = new double[] {inputs.advancerVelocityRPM};
   }
 
   @Override
@@ -70,7 +74,8 @@ public class AdvancerIOSim implements AdvancerIO {
   @Override
   public void setAdvancerVelocity(double velocityRotationsPerMin) {
     advancerClosedLoop = true;
-    advancerFFVolts = ADVANCER_KS * Math.signum(velocityRotationsPerMin) + ADVANCER_KV * velocityRotationsPerMin;
+    advancerFFVolts =
+        ADVANCER_KS * Math.signum(velocityRotationsPerMin) + ADVANCER_KV * velocityRotationsPerMin;
     advancerController.setSetpoint(velocityRotationsPerMin);
   }
 }

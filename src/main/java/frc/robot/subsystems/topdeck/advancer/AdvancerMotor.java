@@ -2,7 +2,6 @@ package frc.robot.subsystems.topdeck.advancer;
 
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-
 import org.littletonrobotics.junction.Logger;
 
 public class AdvancerMotor {
