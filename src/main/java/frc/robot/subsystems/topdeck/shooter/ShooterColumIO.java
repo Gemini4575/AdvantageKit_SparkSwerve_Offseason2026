@@ -10,6 +10,7 @@ public interface ShooterColumIO {
     public double shooterPositionRad = 0.0;
     public double shooterAppliedVolts = 0.0;
     public double shooterCurrentAmps = 0.0;
+    public double shooterFeedForwardVoltage = 0.0;
 
     public double[] odometryTimestamps = new double[] {};
     public double[] odometryShooterPositionsRad = new double[] {};

@@ -23,29 +23,18 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     odometryLock.lock();
-    for (var colum : shooterColums) {
-      colum.periodic();
+    try {
+      for (var colum : shooterColums) {
+        colum.periodic();
+      }
+    } finally {
+      odometryLock.unlock();
     }
-    odometryLock.unlock();
 
     // Stop the shooter if the robots disabled duh
     if (DriverStation.isDisabled()) {
       for (var colum : shooterColums) {
         colum.stop();
-      }
-    }
-
-    // Update odometry
-    double[] sampleTimestamps =
-        shooterColums[0].getOdometryTimestamps(); // All signals are sampled together
-    int sampleCount = sampleTimestamps.length;
-    for (int i = 0; i < sampleCount; i++) {
-      // Read wheel positions and deltas from each module
-      double[] shooterVelocity = new double[4];
-      double[] shooterPositions = new double[4];
-      for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
-        shooterVelocity[moduleIndex] = shooterColums[moduleIndex].getVelocity()[i];
-        shooterPositions[moduleIndex] = shooterColums[moduleIndex].getPosition()[i];
       }
     }
   }

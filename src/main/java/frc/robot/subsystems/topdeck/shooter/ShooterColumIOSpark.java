@@ -9,11 +9,11 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.filter.Debouncer;
 import frc.robot.subsystems.drive.SparkOdometryThread;
 import java.util.Queue;
@@ -22,10 +22,13 @@ import java.util.function.DoubleSupplier;
 public class ShooterColumIOSpark implements ShooterColumIO {
   private final SparkFlex shooterMotor;
   private final RelativeEncoder shooterEncoder;
+  private final SimpleMotorFeedforward shooterFeedforward;
   private final boolean shooterInverted;
   private final double ka;
   private final double kv;
   private final double ks;
+
+  private double shooterFeedforwardVoltage = 0.0;
 
   private final SparkClosedLoopController shooterController;
 
@@ -83,6 +86,7 @@ public class ShooterColumIOSpark implements ShooterColumIO {
         };
     shooterController = shooterMotor.getClosedLoopController();
     shooterEncoder = shooterMotor.getEncoder();
+    shooterFeedforward = new SimpleMotorFeedforward(ks, kv, ka);
     // Configure shooter motor
     var shooterConfig = new SparkFlexConfig();
     shooterConfig
@@ -92,7 +96,7 @@ public class ShooterColumIOSpark implements ShooterColumIO {
         .inverted(shooterInverted);
     shooterConfig.encoder.uvwMeasurementPeriod(10).uvwAverageDepth(2);
     shooterConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-    shooterConfig.closedLoop.feedForward.kV(kv);
+
     shooterConfig
         .signals
         .primaryEncoderPositionAlwaysOn(true)
@@ -134,7 +138,11 @@ public class ShooterColumIOSpark implements ShooterColumIO {
     ifOk(
         shooterMotor, shooterMotor::getOutputCurrent, (value) -> inputs.shooterCurrentAmps = value);
     inputs.shooterConnected = shooterConnectedDebounce.calculate(!sparkStickyFault);
+
+    inputs.shooterFeedForwardVoltage = shooterFeedforwardVoltage;
     // Update odometry inputs
+    inputs.odometryTimestamps =
+        timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
     inputs.odometryShooterPositionsRad =
         shooterPositionQueue.stream().mapToDouble((Double value) -> value).toArray();
     inputs.odometryShooterVelocityRot =
@@ -151,6 +159,7 @@ public class ShooterColumIOSpark implements ShooterColumIO {
 
   @Override
   public void setShooterVelocity(double velocityRotationsPerMin) {
-    shooterController.setSetpoint(velocityRotationsPerMin, ControlType.kVelocity);
+    shooterFeedforwardVoltage = shooterFeedforward.calculate(velocityRotationsPerMin / 60);
+    setShooterOpenLoop(shooterFeedforwardVoltage);
   }
 }

@@ -2,15 +2,18 @@ package frc.robot.subsystems.topdeck.shooter;
 
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import org.littletonrobotics.junction.Logger;
 
 public class ShooterColum {
   private final ShooterColumIO io;
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
+  private final String name;
 
   private final Alert ShooterDisconnectedAlert;
 
   public ShooterColum(ShooterColumIO io, int index) {
     this.io = io;
+    name = "column" + index;
     ShooterDisconnectedAlert =
         new Alert(
             "Disconnected shooter motor on module " + Integer.toString(index) + ".",
@@ -19,6 +22,7 @@ public class ShooterColum {
 
   public void periodic() {
     io.updateInputs(inputs);
+    Logger.processInputs("Shooter/" + name, inputs);
 
     // Update alerts
     ShooterDisconnectedAlert.set(!inputs.shooterConnected);

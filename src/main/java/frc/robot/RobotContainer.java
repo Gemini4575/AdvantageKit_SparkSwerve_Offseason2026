@@ -202,7 +202,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    new JoystickButton(operator, 1).whileFalse(new ShootFromHubTele(shooter, advancer));
+    new JoystickButton(operator, 1).whileTrue(new ShootFromHubTele(shooter, advancer));
   }
 
   /**

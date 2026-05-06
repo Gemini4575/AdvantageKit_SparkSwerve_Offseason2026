@@ -112,7 +112,7 @@ public class AdvancerIOSpark implements AdvancerIO {
 
   @Override
   public void setAdvancerOpenLoop(double output) {
-    advancerMotor.setVoltage(output);
+    advancerMotor.set(output);
   }
 
   @Override
