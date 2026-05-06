@@ -25,7 +25,6 @@ public interface intakeIO {
         public double[] odometryKrakenTimestamps = new double[] {};
         public double[] odometryKrakenPositionsRot = new double[] {};
         public double[] odometryKrakenVelocityRPM = new double[] {};
-
     }
 
     /** Updates the set of loggable inputs. */
@@ -36,21 +35,14 @@ public interface intakeIO {
     public default void setIntakeOpenLoop(double output) {
     }
 
-    /** Run the intake motor at the specified voltage. */
-    public default void setIntakeVoltage(double volts) {
+    /** Run the intake motor until a setpoint */
+    public default boolean setIntakeOpenLoopUntilSetpointDown() {
+        return false;
     }
 
-    /**
-     * Set The intake motor position in rotations. This should be used for a
-     * position control loop, and the motor controller should handle the PID
-     * internally. The motor controller should also handle the feedforward to
-     * compensate for gravity.
-     */
-    public default void setIntakePosition(double positionRotations) {
-    }
-
-    /** Run the intake motor at the specified velocity. */
-    public default void setIntakeVelocity(double velocityRotationsPerMin) {
+    /** Run the intake motor until a setpoint */
+    public default boolean setIntakeOpenLoopUntilSetpointUp() {
+        return false;
     }
 
     /** Run the kraken motor at the specified open loop percent output. */
@@ -59,10 +51,6 @@ public interface intakeIO {
 
     /** Run the kraken motor at the specified voltage. */
     public default void setKrakenVoltage(double volts) {
-    }
-
-    /** Run the kraken motor at the specified velocity. */
-    public default void setKrakenVelocity(double velocityRotationsPerMin) {
     }
 
 }
