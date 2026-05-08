@@ -15,7 +15,8 @@ public class IntakeIOSim implements intakeIO {
   private static final double moi = 0.004;
   private static final double reduction = 1.0;
 
-  private final DCMotorSim sim = new DCMotorSim(LinearSystemId.createDCMotorSystem(gearbox, moi, reduction), gearbox);
+  private final DCMotorSim sim =
+      new DCMotorSim(LinearSystemId.createDCMotorSystem(gearbox, moi, reduction), gearbox);
   private double appliedVolts = 0.0;
 
   @Override
@@ -24,7 +25,8 @@ public class IntakeIOSim implements intakeIO {
     sim.update(0.02);
 
     double positionRot = Units.radiansToRotations(sim.getAngularPositionRad());
-    double velocityRPM = Units.radiansPerSecondToRotationsPerMinute(sim.getAngularVelocityRadPerSec());
+    double velocityRPM =
+        Units.radiansPerSecondToRotationsPerMinute(sim.getAngularVelocityRadPerSec());
     double currentAmps = Math.abs(sim.getCurrentDrawAmps());
 
     inputs.intakeConnected = true;
@@ -33,18 +35,18 @@ public class IntakeIOSim implements intakeIO {
     inputs.intakeAppliedVolts = appliedVolts;
     inputs.intakeSupplyCurrentAmps = currentAmps;
     inputs.intakeStatorCurrentAmps = currentAmps;
-    inputs.odometryTimestamps = new double[] { Timer.getFPGATimestamp() };
-    inputs.odometryIntakePositionsRot = new double[] { positionRot };
-    inputs.odometryIntakeVelocityRPM = new double[] { velocityRPM };
+    inputs.odometryTimestamps = new double[] {Timer.getFPGATimestamp()};
+    inputs.odometryIntakePositionsRot = new double[] {positionRot};
+    inputs.odometryIntakeVelocityRPM = new double[] {velocityRPM};
 
     inputs.intakeKrakenPositionRot = positionRot;
     inputs.intakeKrakenVelocityRPM = velocityRPM;
     inputs.intakeKrakenAppliedVolts = appliedVolts;
     inputs.intakeKrakenSupplyCurrentAmps = currentAmps;
     inputs.intakeKrakenStatorCurrentAmps = currentAmps;
-    inputs.odometryKrakenTimestamps = new double[] { inputs.odometryTimestamps[0] };
-    inputs.odometryKrakenPositionsRot = new double[] { positionRot };
-    inputs.odometryKrakenVelocityRPM = new double[] { velocityRPM };
+    inputs.odometryKrakenTimestamps = new double[] {inputs.odometryTimestamps[0]};
+    inputs.odometryKrakenPositionsRot = new double[] {positionRot};
+    inputs.odometryKrakenVelocityRPM = new double[] {velocityRPM};
   }
 
   @Override
